@@ -1,50 +1,42 @@
-# Welcome to your Expo app 👋
+# moyotayo FE
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+2026 바이브해커톤 — moyotayo 프론트엔드 (React Native).
 
-## Get started
+## Stack
 
-1. Install dependencies
+- [Expo](https://expo.dev) (SDK 54) + TypeScript
+- [Expo Router](https://docs.expo.dev/router/introduction) — 파일 기반 라우팅
+- [Zustand](https://github.com/pmndrs/zustand) — 클라이언트 상태관리
+- [TanStack Query](https://tanstack.com/query) — 서버 상태/데이터 fetching
+- `@react-navigation/native-stack` (Expo Router 위에 stack 직접 구성 시)
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 시작하기
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+콘솔에 표시되는 옵션 중 하나를 선택해서 앱을 실행하세요:
 
-## Learn more
+- Expo Go (iOS/Android)
+- Android 에뮬레이터 / iOS 시뮬레이터
+- Web (`w`)
 
-To learn more about developing your project with Expo, look at the following resources:
+## 디렉토리 구조
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+app/                # Expo Router 화면 (파일 기반 라우팅)
+src/lib/            # 공용 유틸 (queryClient 등)
+src/store/          # Zustand store
+components/         # 재사용 가능한 UI 컴포넌트
+hooks/              # 커스텀 훅
+constants/          # 색상/스타일 상수
+assets/             # 이미지·폰트 등 정적 리소스
+```
 
-## Join the community
+## 부트스트랩 메모
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- `app/_layout.tsx` 가 `QueryClientProvider`로 전체 앱을 감쌉니다.
+- TanStack Query 기본 설정: `staleTime: 30s`, `retry: 1`, `refetchOnWindowFocus: false` — 필요에 따라 `src/lib/queryClient.ts` 에서 조정.
+- Zustand 예시 store(`src/store/useAppStore.ts`)는 placeholder입니다. 실제 도메인 store로 교체하세요.
