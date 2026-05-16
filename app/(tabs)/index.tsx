@@ -1,98 +1,69 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { CourseRow } from '@/components/supick/CourseRow';
+import { ScreenWrap } from '@/components/supick/ScreenWrap';
+import { StatChip } from '@/components/supick/StatChip';
+import { Timetable } from '@/components/supick/Timetable';
+import { sampleCourses } from '@/src/data/sampleData';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const courses = sampleCourses;
+  const totalCredits = courses.reduce((s, c) => s + c.credits, 0);
+  const uniqueDays = new Set(courses.map((c) => c.day)).size;
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  return (
+    <ScreenWrap>
+      <View
+        style={{
+          position: 'absolute',
+          top: 138,
+          left: 70,
+          right: 70,
+          flexDirection: 'row',
+          gap: 30,
+        }}
+      >
+        <View style={{ flexDirection: 'column', gap: 22 }}>
+          <View style={{ flexDirection: 'row', gap: 20 }}>
+            <StatChip tone="red" value={courses.length} label="수강 과목 수" />
+            <StatChip tone="green" value={totalCredits} label="신청 학점" />
+            <StatChip tone="cyan" value={uniqueDays} label="주간 수업 일 수" />
+          </View>
+          <Timetable courses={courses} height={690} />
+        </View>
+
+        <View
+          style={{
+            width: 480,
+            height: 800,
+            borderRadius: 14,
+            borderWidth: 1,
+            borderColor: '#C5DFF0',
+            backgroundColor: 'rgba(255,255,255,0.5)',
+            padding: 18,
+            paddingTop: 22,
+            overflow: 'hidden',
+            ...(Platform.OS === 'web'
+              ? { boxShadow: '0 4px 18px rgba(0,0,0,0.06)' as any }
+              : {
+                  shadowColor: '#000',
+                  shadowOpacity: 0.06,
+                  shadowRadius: 18,
+                  shadowOffset: { width: 0, height: 4 },
+                  elevation: 2,
+                }),
+          }}
+        >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ gap: 12 }}
+          >
+            {courses.map((c) => (
+              <CourseRow key={c.id} course={c} />
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    </ScreenWrap>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
