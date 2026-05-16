@@ -8,16 +8,15 @@ import { Mascot } from '@/components/supick/Mascot';
 import { Sparkle } from '@/components/supick/Sparkle';
 import { Stage } from '@/components/supick/Stage';
 import { Fonts, Palette } from '@/constants/supick';
-import { useSupickStore } from '@/src/store/useSupickStore';
 
 export default function Welcome() {
   const router = useRouter();
-  const markStarted = useSupickStore((s) => s.markStarted);
 
+  // 시작하기 → 기능 인트로 화면으로 이동.
+  // markStarted() 는 signup 마지막에 호출됨 (실제 진입 완료 시점).
   const start = useCallback(() => {
-    markStarted();
-    router.replace('/' as never);
-  }, [markStarted, router]);
+    router.push('/intro' as never);
+  }, [router]);
 
   return (
     <Stage>

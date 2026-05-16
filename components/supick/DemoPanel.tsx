@@ -83,7 +83,7 @@ export function DemoPanel() {
         </Pressable>
       </View>
 
-      <Text style={styles.section}>화면 이동</Text>
+      <Text style={styles.section}>온보딩 화면</Text>
       <View style={styles.btnRow}>
         <Pressable
           style={styles.btn}
@@ -95,14 +95,42 @@ export function DemoPanel() {
         </Pressable>
         <Pressable
           style={styles.btn}
+          onPress={() => router.replace('/intro' as never)}
+          accessibilityRole="button"
+          accessibilityLabel="기능 인트로 화면으로 이동"
+        >
+          <Text style={styles.btnText}>Intro</Text>
+        </Pressable>
+      </View>
+      <View style={styles.btnRow}>
+        <Pressable
+          style={styles.btn}
+          onPress={() => router.replace('/login' as never)}
+          accessibilityRole="button"
+          accessibilityLabel="로그인 화면으로 이동"
+        >
+          <Text style={styles.btnText}>Login</Text>
+        </Pressable>
+        <Pressable
+          style={styles.btn}
+          onPress={() => router.replace('/signup' as never)}
+          accessibilityRole="button"
+          accessibilityLabel="회원가입 화면으로 이동"
+        >
+          <Text style={styles.btnText}>Signup</Text>
+        </Pressable>
+      </View>
+
+      <Text style={styles.section}>메인 탭 이동</Text>
+      <View style={styles.btnRow}>
+        <Pressable
+          style={styles.btn}
           onPress={() => router.replace('/' as never)}
           accessibilityRole="button"
           accessibilityLabel="홈으로 이동"
         >
           <Text style={styles.btnText}>홈</Text>
         </Pressable>
-      </View>
-      <View style={styles.btnRow}>
         <Pressable
           style={styles.btn}
           onPress={() => router.replace('/recommend' as never)}
@@ -111,6 +139,8 @@ export function DemoPanel() {
         >
           <Text style={styles.btnText}>추천</Text>
         </Pressable>
+      </View>
+      <View style={styles.btnRow}>
         <Pressable
           style={styles.btn}
           onPress={() => router.replace('/reviews' as never)}
