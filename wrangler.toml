@@ -1,0 +1,14 @@
+# Wrangler CLI 설정 (Cloudflare Pages 프로젝트)
+#
+# 사용:
+#   npx wrangler pages deploy        # wrangler.toml 자동 인식
+#   npx wrangler pages deploy --project-name=moyotayo
+#
+# 처음 한 번만:
+#   npx wrangler pages project create moyotayo --production-branch=main
+#
+# name 필드는 Cloudflare Pages 대시보드의 프로젝트 이름과 일치해야 한다.
+
+name = "moyotayo"
+compatibility_date = "2026-05-17"
+pages_build_output_dir = "./dist"
