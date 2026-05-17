@@ -45,9 +45,9 @@ export type SemesterKey = '26년 1학기' | '25년 2학기' | '25년 1학기';
 export const SEMESTERS: SemesterKey[] = ['26년 1학기', '25년 2학기', '25년 1학기'];
 
 // 현재 수강 중인 강의 (26년 1학기) — Home/MyPage 메인 시간표
+// 시간이 겹치지 않도록 정리 — 월요일 9:30 슬롯은 mw(악성코드분석) 단독
 export const sampleCourses: Course[] = [
   { id: 'mw',  title: '악성코드분석',           professor: '김대엽', location: '수원역4번출구',  day: '월', start: '9:30',  end: '12:20', category: 'jeonseon', credits: 3, area: '전선' },
-  { id: 'ca',  title: '중앙아시아의이해(이러닝)',  professor: '박승찬', location: '온라인',         day: '월', start: '9:30',  end: '11:20', category: 'gyoyang',  credits: 2, area: '교양' },
   { id: 'net', title: '컴퓨터네트워크',           professor: '김아람', location: 'IT대학 306호',  day: '화', start: '12:30', end: '14:20', category: 'jeonhaek', credits: 3, area: '전핵' },
   { id: 'sem', title: '전공진로세미나1',          professor: '주호연', location: 'IT대학 502호',  day: '수', start: '12:30', end: '13:20', category: 'jeonchwi', credits: 1, area: '전취' },
   { id: 'esl', title: 'AI활용ESL1',             professor: '자스민',  location: '인문101호',     day: '목', start: '12:30', end: '14:20', category: 'gigyo',    credits: 2, area: '기교' },
