@@ -34,17 +34,27 @@ function seedShuffle<T>(arr: T[], seed: number): T[] {
   return out;
 }
 
+const VARIANT_COUNT = 4;
+const COMPLEMENT_PER_VARIANT = 3;
+
 function generateVariants(
   picklist: Course[],
   all: Course[],
   seed: number,
-): { a: Course[]; b: Course[] } {
+): Course[][] {
   const candidates = all.filter((c) => !picklist.some((p) => p.id === c.id));
   const shuffled = seedShuffle(candidates, seed);
-  return {
-    a: [...picklist, ...shuffled.slice(0, 3)],
-    b: [...picklist, ...shuffled.slice(3, 6)],
-  };
+  const variants: Course[][] = [];
+  for (let i = 0; i < VARIANT_COUNT; i++) {
+    const start = (i * COMPLEMENT_PER_VARIANT) % Math.max(shuffled.length, 1);
+    const complement: Course[] = [];
+    for (let j = 0; j < COMPLEMENT_PER_VARIANT; j++) {
+      if (shuffled.length === 0) break;
+      complement.push(shuffled[(start + j) % shuffled.length]);
+    }
+    variants.push([...picklist, ...complement]);
+  }
+  return variants;
 }
 
 export default function RecommendScreen() {
@@ -141,16 +151,14 @@ export default function RecommendScreen() {
           contentContainerStyle={styles.resultScrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <Timetable
-            courses={variants.a}
-            title="📌 추천 1"
-            hourHeight={40}
-          />
-          <Timetable
-            courses={variants.b}
-            title="📌 추천 2"
-            hourHeight={40}
-          />
+          {variants.map((v, i) => (
+            <Timetable
+              key={i}
+              courses={v}
+              title={`📌 추천 ${i + 1}`}
+              hourHeight={40}
+            />
+          ))}
         </ScrollView>
 
         {wizardRunning ? <WizardOverlay /> : null}
