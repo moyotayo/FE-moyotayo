@@ -13,6 +13,9 @@ type Props = {
   mascotPosition?: MascotPosition;
   mascotSize?: number;
   mascotSpeech?: string | null;
+  mascotSpeechHint?: string | null;
+  mascotOnPress?: () => void;
+  mascotAccessibilityLabel?: string;
   bgTopLeft?: boolean;
   bgBottomRight?: boolean;
 };
@@ -25,6 +28,9 @@ export function ScreenWrap({
   mascotPosition = 'bottomRight',
   mascotSize = 280,
   mascotSpeech,
+  mascotSpeechHint,
+  mascotOnPress,
+  mascotAccessibilityLabel,
   bgTopLeft = true,
   bgBottomRight = true,
 }: Props) {
@@ -39,6 +45,9 @@ export function ScreenWrap({
           position={mascotPosition}
           size={mascotSize}
           speech={mascotSpeech}
+          speechHint={mascotSpeechHint}
+          onPress={mascotOnPress}
+          accessibilityLabel={mascotAccessibilityLabel}
         />
       ) : null}
     </Stage>
