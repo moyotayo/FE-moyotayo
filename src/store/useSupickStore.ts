@@ -28,6 +28,11 @@ type SupickState = {
   selectedCourse: Course | null;
   openCourseDetail: (c: Course) => void;
   closeCourseDetail: () => void;
+
+  // 강의평 등록 폼
+  reviewCourse: Course | null;
+  startReview: (c: Course) => void;
+  endReview: () => void;
 };
 
 export const useSupickStore = create<SupickState>((set) => ({
@@ -62,6 +67,7 @@ export const useSupickStore = create<SupickState>((set) => ({
       hasStarted: false,
       selectedSemester: '26년 1학기',
       selectedCourse: null,
+      reviewCourse: null,
     }),
 
   setSelectedSemester: (s) => set({ selectedSemester: s }),
@@ -69,4 +75,8 @@ export const useSupickStore = create<SupickState>((set) => ({
   selectedCourse: null,
   openCourseDetail: (c) => set({ selectedCourse: c }),
   closeCourseDetail: () => set({ selectedCourse: null }),
+
+  reviewCourse: null,
+  startReview: (c) => set({ reviewCourse: c, selectedCourse: null }),
+  endReview: () => set({ reviewCourse: null }),
 }));

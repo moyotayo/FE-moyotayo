@@ -17,6 +17,10 @@ export function TopNav() {
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/' || pathname === '';
+    // /reviews 는 /review-form 같은 review 관련 sub-route 도 active 로 표시
+    if (href === '/reviews') {
+      return pathname === '/reviews' || pathname.startsWith('/review');
+    }
     return pathname === href || pathname.startsWith(href + '/');
   };
 

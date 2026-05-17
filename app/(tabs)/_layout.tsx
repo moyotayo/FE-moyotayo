@@ -13,6 +13,7 @@ export default function TabsLayout() {
       <Tabs.Screen name="recommend" />
       <Tabs.Screen name="reviews" />
       <Tabs.Screen name="mypage" />
+      <Tabs.Screen name="review-form" options={{ href: null }} />
       <Tabs.Screen name="explore" options={{ href: null }} />
     </Tabs>
   );

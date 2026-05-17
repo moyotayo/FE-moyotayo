@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
-import { Text, View, type ViewStyle } from 'react-native';
+import type { ReactNode } from 'react';
+import { Pressable, Text, View, type ViewStyle } from 'react-native';
 import Svg, { Polygon } from 'react-native-svg';
 
 import { Fonts, Palette } from '@/constants/supick';
@@ -16,15 +17,23 @@ export const MASCOT_SOURCES = {
 type Props = {
   pose?: MascotPose;
   speech?: string | null;
+  /** speech 옆에 표시할 보조 라벨 (예: "CLICK!") */
+  speechHint?: string | null;
   position?: MascotPosition;
   size?: number;
+  /** 제공 시 마스코트 이미지가 Pressable 이 되고 클릭 가능 */
+  onPress?: () => void;
+  accessibilityLabel?: string;
 };
 
 export function Mascot({
   pose = 'standing',
   speech,
+  speechHint,
   position = 'bottomRight',
   size = 280,
+  onPress,
+  accessibilityLabel,
 }: Props) {
   const positionStyle: ViewStyle = (
     {
@@ -35,72 +44,144 @@ export function Mascot({
     } as const
   )[position];
 
+  const image = (
+    <Image
+      source={MASCOT_SOURCES[pose]}
+      style={{ width: size, height: size }}
+      contentFit="contain"
+    />
+  );
+
+  const interactiveMascot = onPress ? (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => ({
+        width: size,
+        height: size,
+        transform: [{ scale: pressed ? 0.96 : 1 }],
+      })}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? '마스코트 클릭'}
+    >
+      {image}
+    </Pressable>
+  ) : (
+    image
+  );
+
   return (
     <View
       style={[
-        { position: 'absolute', zIndex: 10, pointerEvents: 'none' },
+        {
+          position: 'absolute',
+          zIndex: 10,
+          // onPress 가 있을 땐 wrapper 도 클릭 받아야 child Pressable 에 닿음.
+          // (box-none 은 web 에서 child pointer-events 가 잘 안 통과해서 'auto' 사용)
+          pointerEvents: onPress ? 'auto' : 'none',
+        },
         positionStyle,
       ]}
     >
       {speech ? (
+        // 말풍선은 항상 패스스루 — 클릭은 뒤의 mascot Pressable 로
+        <SpeechBubble size={size} hint={speechHint}>
+          {speech}
+        </SpeechBubble>
+      ) : null}
+      {interactiveMascot}
+    </View>
+  );
+}
+
+function SpeechBubble({
+  size,
+  children,
+  hint,
+}: {
+  size: number;
+  children: ReactNode;
+  hint?: string | null;
+}) {
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        bottom: size * 0.7,
+        right: size * 0.6,
+        backgroundColor: Palette.white,
+        borderWidth: 1.5,
+        borderColor: Palette.black,
+        borderRadius: 18,
+        paddingVertical: 12,
+        paddingHorizontal: 18,
+        // 말풍선 자체는 클릭 패스스루 — 뒤의 mascot Pressable 이 받음
+        pointerEvents: 'none',
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: Fonts.display,
+          fontSize: 17,
+          color: Palette.black,
+          lineHeight: 20,
+        }}
+      >
+        {children}
+      </Text>
+      {hint ? (
         <View
+          pointerEvents="none"
           style={{
             position: 'absolute',
-            bottom: size * 0.7,
-            right: size * 0.6,
-            backgroundColor: Palette.white,
-            borderWidth: 1.5,
-            borderColor: Palette.black,
-            borderRadius: 18,
-            paddingVertical: 12,
-            paddingHorizontal: 18,
+            top: -22,
+            right: -22,
+            backgroundColor: '#E14545',
+            paddingHorizontal: 12,
+            paddingVertical: 5,
+            borderRadius: 14,
+            transform: [{ rotate: '8deg' }],
           }}
         >
           <Text
             style={{
-              fontFamily: Fonts.display,
-              fontSize: 17,
-              color: Palette.black,
-              lineHeight: 20,
+              fontFamily: 'Pretendard-Bold',
+              fontSize: 16,
+              color: '#FFFFFF',
+              lineHeight: 18,
             }}
           >
-            {speech}
+            {hint}
           </Text>
-          {/* 삼각 꼬리 외곽 (검정) — 마스코트 쪽을 가리킴 */}
-          <View
-            style={{
-              position: 'absolute',
-              right: -10,
-              bottom: 14,
-              width: 12,
-              height: 16,
-            }}
-          >
-            <Svg width={12} height={16} viewBox="0 0 12 16">
-              <Polygon points="0,0 12,8 0,16" fill={Palette.black} />
-            </Svg>
-          </View>
-          {/* 삼각 꼬리 내부 (흰색) — 외곽보다 살짝 안쪽 + 작음 */}
-          <View
-            style={{
-              position: 'absolute',
-              right: -7,
-              bottom: 16,
-              width: 9,
-              height: 12,
-            }}
-          >
-            <Svg width={9} height={12} viewBox="0 0 9 12">
-              <Polygon points="0,0 9,6 0,12" fill={Palette.white} />
-            </Svg>
-          </View>
         </View>
       ) : null}
-      <Image
-        source={MASCOT_SOURCES[pose]}
-        style={{ width: size, height: size }}
-        contentFit="contain"
-      />
+      {/* 삼각 꼬리 외곽 (검정) */}
+      <View
+        style={{
+          position: 'absolute',
+          right: -10,
+          bottom: 14,
+          width: 12,
+          height: 16,
+        }}
+      >
+        <Svg width={12} height={16} viewBox="0 0 12 16">
+          <Polygon points="0,0 12,8 0,16" fill={Palette.black} />
+        </Svg>
+      </View>
+      {/* 삼각 꼬리 내부 (흰색) */}
+      <View
+        style={{
+          position: 'absolute',
+          right: -7,
+          bottom: 16,
+          width: 9,
+          height: 12,
+        }}
+      >
+        <Svg width={9} height={12} viewBox="0 0 9 12">
+          <Polygon points="0,0 9,6 0,12" fill={Palette.white} />
+        </Svg>
+      </View>
     </View>
   );
 }

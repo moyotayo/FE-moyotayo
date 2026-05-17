@@ -40,7 +40,7 @@ export type TimetableCourse = {
 const PAD_TOP = 120;
 const PAD_LEFT = 70;
 const DAY_W = 130;
-const HOUR_H = 56;
+const DEFAULT_HOUR_H = 56;
 const NOTE_W = DAY_W - 16;
 const COL_GAP = 2;
 
@@ -49,9 +49,11 @@ function toMin(time: string): number {
   return h * 60 + m;
 }
 
-function toY(time: string): number {
-  const mins = toMin(time) - (9 * 60 + 30);
-  return PAD_TOP + (mins / 60) * HOUR_H;
+function makeToY(hourH: number) {
+  return (time: string) => {
+    const mins = toMin(time) - (9 * 60 + 30);
+    return PAD_TOP + (mins / 60) * hourH;
+  };
 }
 
 type Layout = { col: number; cols: number };
@@ -102,18 +104,25 @@ function computeLayout(courses: TimetableCourse[]): Map<string, Layout> {
 export function Timetable({
   courses,
   title = '📌 2026학년도 1학기 시간표',
-  height = 720,
+  height,
+  hourHeight = DEFAULT_HOUR_H,
   onNotePress,
 }: {
   courses: TimetableCourse[];
   title?: string;
+  /** 기본: PAD_TOP + 10 * hourHeight 로 자동 계산 */
   height?: number;
+  /** 시간당 픽셀 높이. compact 모드는 36-40 권장. 기본 56 */
+  hourHeight?: number;
   onNotePress?: (courseId: string) => void;
 }) {
   const layout = useMemo(() => computeLayout(courses), [courses]);
+  const HOUR_H = hourHeight;
+  const toY = useMemo(() => makeToY(HOUR_H), [HOUR_H]);
+  const cardHeight = height ?? PAD_TOP + HOUR_H * 10 + 8;
 
   return (
-    <View style={[styles.card, { height }]}>
+    <View style={[styles.card, { height: cardHeight }]}>
       <LinearGradient
         colors={['#F9F9F9', '#6CC0FA']}
         style={StyleSheet.absoluteFillObject}

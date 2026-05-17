@@ -1,5 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
+import { useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/supick/Button';
@@ -8,13 +9,35 @@ import { ReviewRow } from '@/components/supick/ReviewRow';
 import { ScreenWrap } from '@/components/supick/ScreenWrap';
 import { SearchInput } from '@/components/supick/SearchInput';
 import { Fonts, Palette, Shadows } from '@/constants/supick';
-import { sampleCourses, sampleReviews } from '@/src/data/sampleData';
+import { sampleCourses, sampleReviews, type Course } from '@/src/data/sampleData';
+import { useSupickStore } from '@/src/store/useSupickStore';
 
 export default function ReviewsScreen() {
+  const router = useRouter();
+  const startReview = useSupickStore((s) => s.startReview);
+
   const [query, setQuery] = useState('');
   const composerCourses = sampleCourses.filter((c) =>
     ['thn', 'lif'].includes(c.id),
   );
+  const [selectedComposerId, setSelectedComposerId] = useState<string>(
+    composerCourses[0]?.id ?? '',
+  );
+
+  const goReview = useCallback(
+    (course: Course) => {
+      startReview(course);
+      router.push('/review-form' as never);
+    },
+    [router, startReview],
+  );
+
+  const onClickWrite = useCallback(() => {
+    const target =
+      composerCourses.find((c) => c.id === selectedComposerId) ??
+      composerCourses[0];
+    if (target) goReview(target);
+  }, [composerCourses, selectedComposerId, goReview]);
 
   return (
     <ScreenWrap
@@ -68,12 +91,37 @@ export default function ReviewsScreen() {
             <Text style={styles.composerTitle}>수강 과목 평가하기</Text>
             <View style={styles.composerInput} />
             <View style={{ gap: 10 }}>
-              {composerCourses.map((c) => (
-                <CourseRow key={c.id} course={c} compact meta={c.professor} />
-              ))}
+              {composerCourses.map((c) => {
+                const isSelected = c.id === selectedComposerId;
+                return (
+                  <View
+                    key={c.id}
+                    style={
+                      isSelected
+                        ? {
+                            borderRadius: 18,
+                            borderWidth: 2,
+                            borderColor: Palette.blue500,
+                          }
+                        : undefined
+                    }
+                  >
+                    <CourseRow
+                      course={c}
+                      compact
+                      meta={c.professor}
+                      onPress={() => {
+                        setSelectedComposerId(c.id);
+                      }}
+                    />
+                  </View>
+                );
+              })}
             </View>
             <View style={{ alignItems: 'flex-end', marginTop: 4 }}>
-              <Button variant="rect">평가 작성하기</Button>
+              <Button variant="rect" onPress={onClickWrite}>
+                평가 작성하기
+              </Button>
             </View>
           </View>
         </View>
