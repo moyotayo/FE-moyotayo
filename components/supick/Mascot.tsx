@@ -75,18 +75,16 @@ export function Mascot({
         {
           position: 'absolute',
           zIndex: 10,
-          // onPress 가 있을 땐 box-none 으로 자식만 이벤트 받게, 없을 땐 완전 패스스루
-          pointerEvents: onPress ? 'box-none' : 'none',
+          // onPress 가 있을 땐 wrapper 도 클릭 받아야 child Pressable 에 닿음.
+          // (box-none 은 web 에서 child pointer-events 가 잘 안 통과해서 'auto' 사용)
+          pointerEvents: onPress ? 'auto' : 'none',
         },
         positionStyle,
       ]}
     >
       {speech ? (
-        <SpeechBubble
-          size={size}
-          hint={speechHint}
-          pointerEventsNone={!onPress}
-        >
+        // 말풍선은 항상 패스스루 — 클릭은 뒤의 mascot Pressable 로
+        <SpeechBubble size={size} hint={speechHint}>
           {speech}
         </SpeechBubble>
       ) : null}
@@ -99,16 +97,13 @@ function SpeechBubble({
   size,
   children,
   hint,
-  pointerEventsNone,
 }: {
   size: number;
   children: ReactNode;
   hint?: string | null;
-  pointerEventsNone?: boolean;
 }) {
   return (
     <View
-      pointerEvents={pointerEventsNone ? 'none' : 'box-none'}
       style={{
         position: 'absolute',
         bottom: size * 0.7,
@@ -119,6 +114,8 @@ function SpeechBubble({
         borderRadius: 18,
         paddingVertical: 12,
         paddingHorizontal: 18,
+        // 말풍선 자체는 클릭 패스스루 — 뒤의 mascot Pressable 이 받음
+        pointerEvents: 'none',
       }}
     >
       <Text
