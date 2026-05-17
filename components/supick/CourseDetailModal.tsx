@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Sparkle } from './Sparkle';
@@ -22,11 +23,19 @@ const EVAL_BTN_GREEN = '#199D59';
 const EVAL_BTN_DISABLED_TEXT = '#ABDE7E';
 
 export function CourseDetailModal() {
+  const router = useRouter();
   const course = useSupickStore((s) => s.selectedCourse);
   const closeDetail = useSupickStore((s) => s.closeCourseDetail);
+  const startReview = useSupickStore((s) => s.startReview);
   const semester = useSupickStore((s) => s.selectedSemester);
 
   if (!course) return null;
+
+  const onEvaluate = () => {
+    // store 의 startReview 가 selectedCourse 클리어 + reviewCourse 설정 동시에 함
+    startReview(course);
+    router.push('/review-form' as never);
+  };
 
   const cat = CATEGORIES[course.category];
 
@@ -104,11 +113,11 @@ export function CourseDetailModal() {
               { opacity: evalEnabled ? (pressed ? 0.7 : 1) : 0.5 },
             ]}
             disabled={!evalEnabled}
-            onPress={closeDetail /* mock — 평가 작성 화면 대신 닫기 */}
+            onPress={onEvaluate}
             accessibilityRole="button"
             accessibilityLabel={
               evalEnabled
-                ? '평가하기'
+                ? '평가하기 — 강의평 등록 화면으로'
                 : `평가 작성 불가 — 강의 ${progressPct}% 진행`
             }
           >
