@@ -20,6 +20,7 @@ const SEMESTERS: ('26년 1학기' | '25년 2학기' | '25년 1학기')[] = [
 export default function MyPageScreen() {
   const semester = useSupickStore((s) => s.selectedSemester);
   const setSemester = useSupickStore((s) => s.setSelectedSemester);
+  const openCourseDetail = useSupickStore((s) => s.openCourseDetail);
   const [showPicker, setShowPicker] = useState(false);
   const courses = semesterTimetables[semester];
 
@@ -60,7 +61,14 @@ export default function MyPageScreen() {
             ) : null}
           </View>
         </View>
-        <Timetable courses={courses} height={720} />
+        <Timetable
+          courses={courses}
+          height={720}
+          onNotePress={(id) => {
+            const c = courses.find((x) => x.id === id);
+            if (c) openCourseDetail(c);
+          }}
+        />
       </View>
 
       <View style={styles.rightColumn}>

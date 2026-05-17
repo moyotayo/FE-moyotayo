@@ -10,6 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
+import { CourseDetailModal } from '@/components/supick/CourseDetailModal';
 import { DemoPanel } from '@/components/supick/DemoPanel';
 import { queryClient } from '@/src/lib/queryClient';
 
@@ -54,6 +55,7 @@ export default function RootLayout() {
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         </Stack>
         <StatusBar style="dark" />
+        <CourseDetailModal />
         <DemoPanel />
       </ThemeProvider>
     </QueryClientProvider>

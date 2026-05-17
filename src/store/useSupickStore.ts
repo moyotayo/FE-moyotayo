@@ -23,6 +23,11 @@ type SupickState = {
   resetAll: () => void;
 
   setSelectedSemester: (s: SemesterKey) => void;
+
+  // 강의 세부 정보 모달
+  selectedCourse: Course | null;
+  openCourseDetail: (c: Course) => void;
+  closeCourseDetail: () => void;
 };
 
 export const useSupickStore = create<SupickState>((set) => ({
@@ -56,7 +61,12 @@ export const useSupickStore = create<SupickState>((set) => ({
       picklist: [],
       hasStarted: false,
       selectedSemester: '26년 1학기',
+      selectedCourse: null,
     }),
 
   setSelectedSemester: (s) => set({ selectedSemester: s }),
+
+  selectedCourse: null,
+  openCourseDetail: (c) => set({ selectedCourse: c }),
+  closeCourseDetail: () => set({ selectedCourse: null }),
 }));

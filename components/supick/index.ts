@@ -16,3 +16,4 @@ export { PickListPanel } from './PickListPanel';
 export { ReviewRow } from './ReviewRow';
 export { ProfileCard } from './ProfileCard';
 export { DemoPanel } from './DemoPanel';
+export { CourseDetailModal } from './CourseDetailModal';

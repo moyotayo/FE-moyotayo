@@ -11,6 +11,11 @@ export type Course = {
   category: CategoryKey;
   credits: number;
   area: string;
+  // 강의 세부 정보 모달용 (optional — 없으면 모달에서 기본값 사용)
+  section?: string;        // 분반 e.g. "001"
+  department?: string;     // 학과 e.g. "지능형SW융합대학·정보보호"
+  grading?: 'ABCDF' | 'P/F';
+  progressPercent?: number; // 0-100, "평가하기" 버튼 활성화 기준 (>= 50 이면 가능)
 };
 
 export type Review = {

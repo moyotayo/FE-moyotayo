@@ -5,9 +5,11 @@ import { ScreenWrap } from '@/components/supick/ScreenWrap';
 import { StatChip } from '@/components/supick/StatChip';
 import { Timetable } from '@/components/supick/Timetable';
 import { sampleCourses } from '@/src/data/sampleData';
+import { useSupickStore } from '@/src/store/useSupickStore';
 
 export default function HomeScreen() {
   const courses = sampleCourses;
+  const openCourseDetail = useSupickStore((s) => s.openCourseDetail);
   const totalCredits = courses.reduce((s, c) => s + c.credits, 0);
   const uniqueDays = new Set(courses.map((c) => c.day)).size;
 
@@ -29,7 +31,14 @@ export default function HomeScreen() {
             <StatChip tone="green" value={totalCredits} label="신청 학점" />
             <StatChip tone="cyan" value={uniqueDays} label="주간 수업 일 수" />
           </View>
-          <Timetable courses={courses} height={690} />
+          <Timetable
+            courses={courses}
+            height={690}
+            onNotePress={(id) => {
+              const c = courses.find((x) => x.id === id);
+              if (c) openCourseDetail(c);
+            }}
+          />
         </View>
 
         <View
@@ -59,7 +68,12 @@ export default function HomeScreen() {
             contentContainerStyle={{ gap: 12 }}
           >
             {courses.map((c) => (
-              <CourseRow key={c.id} course={c} meta={c.professor} />
+              <CourseRow
+                key={c.id}
+                course={c}
+                meta={c.professor}
+                onPress={() => openCourseDetail(c)}
+              />
             ))}
           </ScrollView>
         </View>

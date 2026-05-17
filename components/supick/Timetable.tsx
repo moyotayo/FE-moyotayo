@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import {
   CATEGORIES,
@@ -103,10 +103,12 @@ export function Timetable({
   courses,
   title = '📌 2026학년도 1학기 시간표',
   height = 720,
+  onNotePress,
 }: {
   courses: TimetableCourse[];
   title?: string;
   height?: number;
+  onNotePress?: (courseId: string) => void;
 }) {
   const layout = useMemo(() => computeLayout(courses), [courses]);
 
@@ -165,21 +167,19 @@ export function Timetable({
         const noteW = slotW - (cols > 1 ? COL_GAP : 0);
         const noteX = PAD_LEFT + dayIdx * DAY_W + 8 + col * slotW;
 
-        return (
-          <View
-            key={c.id}
-            style={{
-              position: 'absolute',
-              left: noteX,
-              top: y1,
-              width: noteW,
-              height: y2 - y1,
-              backgroundColor: noteColor,
-              borderRadius: 6,
-              overflow: 'hidden',
-              ...Shadows.sticker(),
-            }}
-          >
+        const noteStyle = {
+          position: 'absolute' as const,
+          left: noteX,
+          top: y1,
+          width: noteW,
+          height: y2 - y1,
+          backgroundColor: noteColor,
+          borderRadius: 6,
+          overflow: 'hidden' as const,
+          ...Shadows.sticker(),
+        };
+        const innerContent = (
+          <>
             <View style={styles.noteContent}>
               <Text style={styles.noteTitle} numberOfLines={2}>
                 {c.title}
@@ -207,6 +207,24 @@ export function Timetable({
                 backgroundColor: pinColor,
               }}
             />
+          </>
+        );
+        if (onNotePress) {
+          return (
+            <Pressable
+              key={c.id}
+              style={noteStyle}
+              onPress={() => onNotePress(c.id)}
+              accessibilityRole="button"
+              accessibilityLabel={`${c.title} 강의 세부 정보 보기`}
+            >
+              {innerContent}
+            </Pressable>
+          );
+        }
+        return (
+          <View key={c.id} style={noteStyle}>
+            {innerContent}
           </View>
         );
       })}

@@ -21,6 +21,7 @@ export default function RecommendScreen() {
   const picklist = useSupickStore((s) => s.picklist);
   const addToPickList = useSupickStore((s) => s.addToPickList);
   const removeFromPickList = useSupickStore((s) => s.removeFromPickList);
+  const openCourseDetail = useSupickStore((s) => s.openCourseDetail);
 
   const visible = availableCourses.filter(
     (c) =>
@@ -132,6 +133,7 @@ export default function RecommendScreen() {
                   <CourseRow
                     key={c.id}
                     course={c}
+                    onPress={() => openCourseDetail(c)}
                     meta={
                       <View style={{ gap: 2 }}>
                         <Text style={courseMetaStyle}>
