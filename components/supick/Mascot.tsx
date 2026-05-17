@@ -61,6 +61,19 @@ export function Mascot({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? '마스코트 클릭'}
     >
+      {/* 클릭 가능 시각 힌트 — 마스코트 뒤 청록 글로우 원 */}
+      <View
+        pointerEvents="none"
+        style={{
+          position: 'absolute',
+          left: size * 0.1,
+          top: size * 0.1,
+          width: size * 0.8,
+          height: size * 0.8,
+          borderRadius: size,
+          backgroundColor: 'rgba(42, 153, 229, 0.18)',
+        }}
+      />
       {image}
     </Pressable>
   ) : (
@@ -130,19 +143,30 @@ function SpeechBubble({
         {children}
       </Text>
       {hint ? (
-        <Text
+        <View
+          pointerEvents="none"
           style={{
             position: 'absolute',
             top: -22,
-            right: -8,
-            fontFamily: 'Pretendard-Bold',
-            fontSize: 14,
-            color: '#E14545',
-            transform: [{ rotate: '10deg' }],
+            right: -22,
+            backgroundColor: '#E14545',
+            paddingHorizontal: 12,
+            paddingVertical: 5,
+            borderRadius: 14,
+            transform: [{ rotate: '8deg' }],
           }}
         >
-          {hint}
-        </Text>
+          <Text
+            style={{
+              fontFamily: 'Pretendard-Bold',
+              fontSize: 16,
+              color: '#FFFFFF',
+              lineHeight: 18,
+            }}
+          >
+            {hint}
+          </Text>
+        </View>
       ) : null}
       {/* 삼각 꼬리 외곽 (검정) */}
       <View
