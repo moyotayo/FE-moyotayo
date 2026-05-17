@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import {
   CATEGORIES,
@@ -54,6 +54,17 @@ function makeToY(hourH: number) {
     const mins = toMin(time) - (9 * 60 + 30);
     return PAD_TOP + (mins / 60) * hourH;
   };
+}
+
+/** 강의 id 로부터 deterministic 한 미세 회전 각도 (도 단위) — 진짜 포스트잇 느낌 */
+function noteRotation(id: string): string {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) {
+    h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  }
+  // -3 ~ +3 도 사이 (정수 7가지)
+  const deg = (h % 7) - 3;
+  return `${deg}deg`;
 }
 
 type Layout = { col: number; cols: number };
@@ -176,6 +187,7 @@ export function Timetable({
         const noteW = slotW - (cols > 1 ? COL_GAP : 0);
         const noteX = PAD_LEFT + dayIdx * DAY_W + 8 + col * slotW;
 
+        const rotation = noteRotation(c.id);
         const noteStyle = {
           position: 'absolute' as const,
           left: noteX,
@@ -184,39 +196,44 @@ export function Timetable({
           height: y2 - y1,
           backgroundColor: noteColor,
           borderRadius: 6,
-          overflow: 'hidden' as const,
-          ...Shadows.sticker(),
+          overflow: 'visible' as const, // 핀이 노트 밖 위로 살짝 튀어나옴
+          transform: [{ rotate: rotation }],
+          // 진한 그림자 — 종이가 보드 위에 들떠 보이게
+          ...(Platform.OS === 'web'
+            ? {
+                boxShadow:
+                  '2px 5px 14px rgba(0,0,0,0.32), 1px 2px 4px rgba(0,0,0,0.18)',
+              }
+            : {
+                shadowColor: '#000',
+                shadowOpacity: 0.32,
+                shadowRadius: 14,
+                shadowOffset: { width: 2, height: 5 },
+                elevation: 8,
+              }),
         };
         const innerContent = (
-          <>
-            <View style={styles.noteContent}>
-              <Text style={styles.noteTitle} numberOfLines={2}>
-                {c.title}
-              </Text>
-              {c.professor ? (
-                <Text style={styles.noteSub} numberOfLines={1}>
-                  {c.professor}
-                </Text>
-              ) : null}
-              {c.location ? (
-                <Text style={styles.noteSubFaint} numberOfLines={1}>
-                  {c.location}
-                </Text>
-              ) : null}
-            </View>
-            {/* 핀 (카테고리 색 점) — 노트 폭의 절반에 정확히 가운데 */}
-            <View
-              style={{
-                position: 'absolute',
-                top: -6,
-                left: noteW / 2 - 6,
-                width: 12,
-                height: 12,
-                borderRadius: 6,
-                backgroundColor: pinColor,
-              }}
-            />
-          </>
+          /* 핀만 노트 위 가운데에 표시 — 텍스트 없는 순수 컬러 포스트잇 */
+          <View
+            style={{
+              position: 'absolute',
+              top: -6,
+              left: noteW / 2 - 6,
+              width: 12,
+              height: 12,
+              borderRadius: 6,
+              backgroundColor: pinColor,
+              ...(Platform.OS === 'web'
+                ? { boxShadow: '0 1px 2px rgba(0,0,0,0.4)' }
+                : {
+                    shadowColor: '#000',
+                    shadowOpacity: 0.4,
+                    shadowRadius: 2,
+                    shadowOffset: { width: 0, height: 1 },
+                    elevation: 4,
+                  }),
+            }}
+          />
         );
         if (onNotePress) {
           return (
@@ -298,29 +315,5 @@ const styles = StyleSheet.create({
     right: 14,
     height: 1,
     backgroundColor: 'rgba(255,255,255,0.55)',
-  },
-  noteContent: {
-    paddingTop: 10,
-    paddingHorizontal: 8,
-    paddingBottom: 6,
-    gap: 2,
-  },
-  noteTitle: {
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 11,
-    color: '#000',
-    lineHeight: 13,
-  },
-  noteSub: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 10,
-    color: '#1B1B1B',
-    lineHeight: 12,
-  },
-  noteSubFaint: {
-    fontFamily: 'Pretendard-Regular',
-    fontSize: 9,
-    color: '#4B4B4B',
-    lineHeight: 11,
   },
 });
