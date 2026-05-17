@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -39,11 +40,61 @@ const PAD_LEFT = 70;
 const DAY_W = 130;
 const HOUR_H = 56;
 const NOTE_W = DAY_W - 16;
+const COL_GAP = 2;
+
+function toMin(time: string): number {
+  const [h, m] = time.split(':').map(Number);
+  return h * 60 + m;
+}
 
 function toY(time: string): number {
-  const [h, m] = time.split(':').map(Number);
-  const mins = (h - 9) * 60 + (m - 30);
+  const mins = toMin(time) - (9 * 60 + 30);
   return PAD_TOP + (mins / 60) * HOUR_H;
+}
+
+type Layout = { col: number; cols: number };
+
+/**
+ * 같은 요일에 시간이 겹치는 강의들을 cluster 로 묶고 각 강의에
+ * column index + cluster size 를 부여. 겹치지 않는 단독 강의는 cols=1 (full width).
+ */
+function computeLayout(courses: TimetableCourse[]): Map<string, Layout> {
+  const layout = new Map<string, Layout>();
+  const byDay = new Map<string, TimetableCourse[]>();
+  for (const c of courses) {
+    if (!byDay.has(c.day)) byDay.set(c.day, []);
+    byDay.get(c.day)!.push(c);
+  }
+  for (const [, dayCourses] of byDay) {
+    const sorted = [...dayCourses].sort(
+      (a, b) => toMin(a.start) - toMin(b.start),
+    );
+    let cluster: TimetableCourse[] = [];
+    let clusterEnd = 0;
+    const flush = () => {
+      if (cluster.length === 0) return;
+      const cols = cluster.length;
+      cluster.forEach((c, i) => layout.set(c.id, { col: i, cols }));
+      cluster = [];
+    };
+    for (const c of sorted) {
+      const start = toMin(c.start);
+      const end = toMin(c.end);
+      if (cluster.length === 0) {
+        cluster.push(c);
+        clusterEnd = end;
+      } else if (start < clusterEnd) {
+        cluster.push(c);
+        clusterEnd = Math.max(clusterEnd, end);
+      } else {
+        flush();
+        cluster.push(c);
+        clusterEnd = end;
+      }
+    }
+    flush();
+  }
+  return layout;
 }
 
 export function Timetable({
@@ -55,6 +106,8 @@ export function Timetable({
   title?: string;
   height?: number;
 }) {
+  const layout = useMemo(() => computeLayout(courses), [courses]);
+
   return (
     <View style={[styles.card, { height }]}>
       <LinearGradient
@@ -104,14 +157,20 @@ export function Timetable({
         const noteColor =
           NOTE_OVERRIDES[c.id] || NOTE_FILLS[c.category] || '#FFE262';
         const pinColor = CATEGORIES[c.category].color;
+
+        const { col, cols } = layout.get(c.id) ?? { col: 0, cols: 1 };
+        const slotW = NOTE_W / cols;
+        const noteW = slotW - (cols > 1 ? COL_GAP : 0);
+        const noteX = PAD_LEFT + dayIdx * DAY_W + 8 + col * slotW;
+
         return (
           <View
             key={c.id}
             style={{
               position: 'absolute',
-              left: PAD_LEFT + dayIdx * DAY_W + 8,
+              left: noteX,
               top: y1,
-              width: NOTE_W,
+              width: noteW,
               height: y2 - y1,
               backgroundColor: noteColor,
               borderRadius: 6,
@@ -134,12 +193,12 @@ export function Timetable({
                 </Text>
               ) : null}
             </View>
-            {/* 핀 (카테고리 색 점) */}
+            {/* 핀 (카테고리 색 점) — 노트 폭의 절반에 정확히 가운데 */}
             <View
               style={{
                 position: 'absolute',
                 top: -6,
-                left: NOTE_W / 2 - 6,
+                left: noteW / 2 - 6,
                 width: 12,
                 height: 12,
                 borderRadius: 6,
