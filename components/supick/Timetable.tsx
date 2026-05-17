@@ -35,7 +35,9 @@ export type TimetableCourse = {
   category: CategoryKey;
 };
 
-const PAD_TOP = 100;
+// PAD_TOP: 제목 pill(y=40, h=32, 끝=72)과 요일 헤더(높이 28)가 겹치지 않도록
+// 헤더 top = PAD_TOP - 36 가 76 이상이 되게 → PAD_TOP ≥ 112. 12px 여유 두고 120.
+const PAD_TOP = 120;
 const PAD_LEFT = 70;
 const DAY_W = 130;
 const HOUR_H = 56;
