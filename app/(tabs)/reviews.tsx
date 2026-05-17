@@ -69,7 +69,7 @@ export default function ReviewsScreen() {
             <View style={styles.composerInput} />
             <View style={{ gap: 10 }}>
               {composerCourses.map((c) => (
-                <CourseRow key={c.id} course={c} compact />
+                <CourseRow key={c.id} course={c} compact meta={c.professor} />
               ))}
             </View>
             <View style={{ alignItems: 'flex-end', marginTop: 4 }}>

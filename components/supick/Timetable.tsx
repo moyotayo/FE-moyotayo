@@ -26,6 +26,8 @@ const HOURS = [
 export type TimetableCourse = {
   id: string;
   title: string;
+  professor?: string;
+  location?: string;
   day: string;
   start: string;
   end: string;
@@ -36,6 +38,7 @@ const PAD_TOP = 100;
 const PAD_LEFT = 70;
 const DAY_W = 130;
 const HOUR_H = 56;
+const NOTE_W = DAY_W - 16;
 
 function toY(time: string): number {
   const [h, m] = time.split(':').map(Number);
@@ -108,18 +111,35 @@ export function Timetable({
               position: 'absolute',
               left: PAD_LEFT + dayIdx * DAY_W + 8,
               top: y1,
-              width: DAY_W - 16,
+              width: NOTE_W,
               height: y2 - y1,
               backgroundColor: noteColor,
               borderRadius: 6,
+              overflow: 'hidden',
               ...Shadows.sticker(),
             }}
           >
+            <View style={styles.noteContent}>
+              <Text style={styles.noteTitle} numberOfLines={2}>
+                {c.title}
+              </Text>
+              {c.professor ? (
+                <Text style={styles.noteSub} numberOfLines={1}>
+                  {c.professor}
+                </Text>
+              ) : null}
+              {c.location ? (
+                <Text style={styles.noteSubFaint} numberOfLines={1}>
+                  {c.location}
+                </Text>
+              ) : null}
+            </View>
+            {/* 핀 (카테고리 색 점) */}
             <View
               style={{
                 position: 'absolute',
                 top: -6,
-                left: (DAY_W - 16) / 2 - 6,
+                left: NOTE_W / 2 - 6,
                 width: 12,
                 height: 12,
                 borderRadius: 6,
@@ -190,5 +210,29 @@ const styles = StyleSheet.create({
     right: 14,
     height: 1,
     backgroundColor: 'rgba(255,255,255,0.55)',
+  },
+  noteContent: {
+    paddingTop: 10,
+    paddingHorizontal: 8,
+    paddingBottom: 6,
+    gap: 2,
+  },
+  noteTitle: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 11,
+    color: '#000',
+    lineHeight: 13,
+  },
+  noteSub: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 10,
+    color: '#1B1B1B',
+    lineHeight: 12,
+  },
+  noteSubFaint: {
+    fontFamily: 'Pretendard-Regular',
+    fontSize: 9,
+    color: '#4B4B4B',
+    lineHeight: 11,
   },
 });

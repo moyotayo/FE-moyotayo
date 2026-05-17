@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
-import { CourseRow } from '@/components/supick/CourseRow';
+import { CourseRow, courseMetaStyle } from '@/components/supick/CourseRow';
 import { FilterChipRow } from '@/components/supick/FilterChip';
 import { PickListPanel } from '@/components/supick/PickListPanel';
 import { ScreenWrap } from '@/components/supick/ScreenWrap';
@@ -132,6 +132,16 @@ export default function RecommendScreen() {
                   <CourseRow
                     key={c.id}
                     course={c}
+                    meta={
+                      <View style={{ gap: 2 }}>
+                        <Text style={courseMetaStyle}>
+                          {c.day} {c.start} ~ {c.end} · {c.location}
+                        </Text>
+                        <Text style={courseMetaStyle}>
+                          {c.professor} | {c.credits}학점 | {c.area}
+                        </Text>
+                      </View>
+                    }
                     right={
                       inList ? (
                         <Stepper icon="check" />

@@ -6,7 +6,7 @@ export { Stage } from './Stage';
 export { TopNav } from './TopNav';
 export { ScreenWrap } from './ScreenWrap';
 export { CategoryBadge } from './CategoryBadge';
-export { CourseRow, type CourseLike } from './CourseRow';
+export { CourseRow, courseMetaStyle, type CourseLike } from './CourseRow';
 export { StatChip } from './StatChip';
 export { Timetable, type TimetableCourse } from './Timetable';
 export { SearchInput } from './SearchInput';

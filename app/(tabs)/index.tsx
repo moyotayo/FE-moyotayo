@@ -59,7 +59,7 @@ export default function HomeScreen() {
             contentContainerStyle={{ gap: 12 }}
           >
             {courses.map((c) => (
-              <CourseRow key={c.id} course={c} />
+              <CourseRow key={c.id} course={c} meta={c.professor} />
             ))}
           </ScrollView>
         </View>
