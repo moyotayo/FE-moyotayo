@@ -126,7 +126,7 @@ export function Timetable({
           key={d}
           style={[
             styles.dayHeader,
-            { left: PAD_LEFT + i * DAY_W + 20, top: PAD_TOP - 36 },
+            { left: PAD_LEFT + i * DAY_W + 8, top: PAD_TOP - 36 },
           ]}
         >
           <Text style={styles.dayHeaderText}>{d}</Text>
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
   dayHeader: {
     position: 'absolute',
-    width: 90,
+    width: NOTE_W,
     height: 28,
     borderRadius: 100,
     backgroundColor: '#9BC6E8',
