@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="280" height="80" aria-label="SuPick">
+  <text font-family="Pretendard Variable, Inter, system-ui, sans-serif" font-weight="900" font-size="72" letter-spacing="-2">
+    <tspan x="0" y="62" fill="#1A5BA8">Su</tspan>
+    <tspan x="84" y="62" fill="#000000">Pick</tspan>
+  </text>
+  <g transform="translate(218 32)">
+    <path d="M 12.5 0 L 16.919 7.757 L 25 12 L 16.919 16.243 L 12.5 24 L 8.081 16.243 L 0 12 L 8.081 7.757 L 12.5 0 Z" fill="#1E8A52"></path>
+  </g>
+</svg>

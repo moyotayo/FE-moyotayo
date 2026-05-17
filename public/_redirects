@@ -1,0 +1,5 @@
+# Cloudflare Pages 리다이렉트
+
+# Expo Router 가 생성하는 +not-found.html 을 표준 404 응답으로 사용.
+# 정적 파일이 존재하면 그대로 서빙되고, 매치 안 되는 경로만 여기로 떨어진다.
+/*  /+not-found.html  404

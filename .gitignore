@@ -21,13 +21,26 @@ expo-env.d.ts
 # Metro
 .metro-health-check*
 
-# debug
+# debug / logs
+*.log
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+pnpm-debug.log*
+logs/
 
-# macOS
+# eslint
+.eslintcache
+
+# Cloudflare Wrangler
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# OS
 .DS_Store
+Thumbs.db
+Desktop.ini
 *.pem
 
 # local env files
