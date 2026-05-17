@@ -56,24 +56,13 @@ export function Mascot({
     <Pressable
       onPress={onPress}
       style={({ pressed }) => ({
+        width: size,
+        height: size,
         transform: [{ scale: pressed ? 0.96 : 1 }],
       })}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? '마스코트 클릭'}
     >
-      {/* 클릭 가능 시각 힌트 — 마스코트 뒤 청록 글로우 원 */}
-      <View
-        pointerEvents="none"
-        style={{
-          position: 'absolute',
-          left: size * 0.1,
-          top: size * 0.1,
-          width: size * 0.8,
-          height: size * 0.8,
-          borderRadius: size,
-          backgroundColor: 'rgba(42, 153, 229, 0.18)',
-        }}
-      />
       {image}
     </Pressable>
   ) : (
